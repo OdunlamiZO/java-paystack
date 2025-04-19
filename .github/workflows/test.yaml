@@ -1,4 +1,4 @@
-name: Run Tests
+name: Run Tests and Coverage
 
 on:
   push:
@@ -28,5 +28,11 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-maven-
 
-      - name: Run Tests
-        run: mvn test
+      - name: Run Tests with Coverage
+        run: mvn clean verify
+
+      - name: Upload JaCoCo Report Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: jacoco-report
+          path: target/site/jacoco
