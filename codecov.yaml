@@ -11,3 +11,8 @@ coverage:
         target: 57.5%
         threshold: 0%
         informational: false
+  ignore:
+    - "**/*.md"
+    - "**/README.md"
+    - "**/docs/**"
+    - "**/CHANGELOG.md"
