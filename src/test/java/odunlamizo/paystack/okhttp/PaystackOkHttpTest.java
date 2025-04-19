@@ -53,6 +53,7 @@ class PaystackOkHttpTest {
         Response<AccountDetails> response = paystack.resolveAccount("0001234567", "058");
 
         assertTrue(response.isStatus());
+        assertEquals(200, response.getCode());
         assertEquals("Account number resolved", response.getMessage());
         assertEquals("0001234567", response.getData().getAccountNumber());
     }
@@ -89,6 +90,7 @@ class PaystackOkHttpTest {
         Response<List<Bank>> response = paystack.listBanks("nigeria");
 
         assertTrue(response.isStatus());
+        assertEquals(200, response.getCode());
         assertEquals(1, response.getData().size());
         assertEquals("Access Bank", response.getData().get(0).getName());
         assertEquals("044", response.getData().get(0).getCode());
