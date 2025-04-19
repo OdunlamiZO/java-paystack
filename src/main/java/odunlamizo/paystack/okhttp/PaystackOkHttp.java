@@ -17,10 +17,14 @@ import okhttp3.Request;
 public class PaystackOkHttp implements Paystack {
 
     private final OkHttpClient client;
-
-    private static final String BASE_URL = "https://api.paystack.co";
+    private final String baseUrl;
 
     public PaystackOkHttp(@NotNull String secretKey) {
+        this(secretKey, "https://api.paystack.co");
+    }
+
+    public PaystackOkHttp(@NotNull String secretKey, @NotNull String baseUrl) {
+        this.baseUrl = baseUrl;
         client = new OkHttpClient.Builder().addInterceptor(new AuthInterceptor(secretKey)).build();
     }
 
@@ -30,7 +34,7 @@ public class PaystackOkHttp implements Paystack {
         final String URL =
                 String.format(
                         "%s/bank/resolve?account_number=%s&bank_code=%s",
-                        BASE_URL, accountNumber, bankCode);
+                        baseUrl, accountNumber, bankCode);
         Request request = new Request.Builder().url(URL).build();
 
         return newCall(request, new TypeReference<Response<AccountDetails>>() {});
@@ -38,7 +42,7 @@ public class PaystackOkHttp implements Paystack {
 
     @Override
     public Response<List<Bank>> listBanks(@NotNull String country) throws PaystackException {
-        final String URL = String.format("%s/bank?country=%s", BASE_URL, country);
+        final String URL = String.format("%s/bank?country=%s", baseUrl, country);
         Request request = new Request.Builder().url(URL).build();
 
         return newCall(request, new TypeReference<Response<List<Bank>>>() {});
