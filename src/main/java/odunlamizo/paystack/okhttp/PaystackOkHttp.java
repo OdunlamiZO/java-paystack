@@ -48,13 +48,14 @@ public class PaystackOkHttp implements Paystack {
         return newCall(request, new TypeReference<Response<List<Bank>>>() {});
     }
 
-    private <T> T newCall(Request request, TypeReference<T> typeRef) {
+    @SuppressWarnings("unchecked")
+    private <T extends Response<?>> T newCall(Request request, TypeReference<T> typeRef) {
         try {
             okhttp3.Response response = client.newCall(request).execute();
 
             String json = response.body().string();
 
-            return JsonUtil.toValue(json, typeRef);
+            return (T) JsonUtil.toValue(json, typeRef).setCode(response.code());
         } catch (IOException exception) {
             throw new PaystackException(exception.getMessage(), exception.getCause());
         }
