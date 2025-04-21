@@ -1,4 +1,4 @@
-package odunlamizo.paystack.util;
+package io.github.odunlamizo.paystack.util;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -7,6 +7,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import java.util.List;
 import java.util.Map;
 import odunlamizo.paystack.model.Bank;
+import odunlamizo.paystack.util.JsonUtil;
 import org.junit.jupiter.api.Test;
 
 class JsonUtilTest {
