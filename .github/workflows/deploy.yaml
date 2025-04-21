@@ -13,20 +13,20 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Set up Java for OSSRH
-        uses: actions/setup-java@v4
-        with:
-          java-version: '17'
-          distribution: 'temurin'
-          server-id: ossrh
-          server-username: MAVEN_USERNAME
-          server-password: MAVEN_PASSWORD
+      # - name: Set up Java for OSSRH
+      #   uses: actions/setup-java@v4
+      #   with:
+      #     java-version: '17'
+      #     distribution: 'temurin'
+      #     server-id: ossrh
+      #     server-username: MAVEN_USERNAME
+      #     server-password: MAVEN_PASSWORD
 
-      - name: Deploy to OSSRH (Maven Central)
-        run: mvn --batch-mode deploy -Possrh
-        env:
-          MAVEN_USERNAME: ${{ secrets.OSSRH_USERNAME }}
-          MAVEN_PASSWORD: ${{ secrets.OSSRH_TOKEN }}
+      # - name: Deploy to OSSRH (Maven Central)
+      #   run: mvn --batch-mode deploy -Possrh
+      #   env:
+      #     MAVEN_USERNAME: ${{ secrets.OSSRH_USERNAME }}
+      #     MAVEN_PASSWORD: ${{ secrets.OSSRH_TOKEN }}
 
       - name: Set up Java for GitHub Packages
         uses: actions/setup-java@v4

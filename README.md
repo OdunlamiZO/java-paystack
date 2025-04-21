@@ -13,15 +13,43 @@ Whether you're building a backend service, desktop application, or microservice 
 
 ## Installation
 
-Add the following dependency to your `pom.xml`:
+1. Add the GitHub Maven repository to your `pom.xml`:
+
+```xml
+<repositories>
+  <repository>
+    <id>github</id>
+    <name>GitHub Packages - java-paystack</name>
+    <url>https://maven.pkg.github.com/OdunlamiZO/java-paystack</url>
+  </repository>
+</repositories>
+```
+
+2. Add the dependency:
 
 ```xml
 <dependency>
-  <groupId>odunlamizo</groupId>
+  <groupId>io.github.odunlamizo</groupId>
   <artifactId>java-paystack</artifactId>
   <version>1.0-SNAPSHOT</version>
 </dependency>
 ```
+
+3. Configure GitHub credentials in your Maven settings.xml (usually located at ~/.m2/settings.xml):
+
+```xml
+<settings>
+  <servers>
+    <server>
+      <id>github</id>
+      <username>YOUR_GITHUB_USERNAME</username>
+      <password>YOUR_PERSONAL_ACCESS_TOKEN</password>
+    </server>
+  </servers>
+</settings>
+```
+
+> 📌&nbsp;&nbsp;&nbsp; Step 1 & 3 is required for now, since we are only deploying to github packages.
 
 ## Getting Started
 
@@ -50,5 +78,5 @@ We welcome contributions to improve this SDK! To contribute:
 3. Make your changes and write appropriate tests.
 4. **Open a Pull Request (PR)** to the `main` branch with a clear description of your changes.
 
-> 📌 Please ensure your code adheres to the project's style and passes all tests before submitting a PR.
+> 📌&nbsp;&nbsp;&nbsp;Please ensure your code adheres to the project's style and passes all tests before submitting a PR.
 

@@ -1,4 +1,4 @@
-package odunlamizo.paystack;
+package io.github.odunlamizo.paystack;
 
 import lombok.NoArgsConstructor;
 

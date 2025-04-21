@@ -1,4 +1,4 @@
-package odunlamizo.paystack.util;
+package io.github.odunlamizo.paystack.util;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;

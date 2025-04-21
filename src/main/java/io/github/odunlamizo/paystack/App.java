@@ -1,7 +1,7 @@
-package odunlamizo.paystack;
+package io.github.odunlamizo.paystack;
 
 import io.github.cdimascio.dotenv.Dotenv;
-import odunlamizo.paystack.okhttp.PaystackOkHttp;
+import io.github.odunlamizo.paystack.okhttp.PaystackOkHttp;
 
 public class App {
 

@@ -1,15 +1,15 @@
-package odunlamizo.paystack.okhttp;
+package io.github.odunlamizo.paystack.okhttp;
 
 import com.fasterxml.jackson.core.type.TypeReference;
+import io.github.odunlamizo.paystack.Paystack;
+import io.github.odunlamizo.paystack.PaystackException;
+import io.github.odunlamizo.paystack.model.AccountDetails;
+import io.github.odunlamizo.paystack.model.Bank;
+import io.github.odunlamizo.paystack.model.Response;
+import io.github.odunlamizo.paystack.util.JsonUtil;
 import jakarta.validation.constraints.NotNull;
 import java.io.IOException;
 import java.util.List;
-import odunlamizo.paystack.Paystack;
-import odunlamizo.paystack.PaystackException;
-import odunlamizo.paystack.model.AccountDetails;
-import odunlamizo.paystack.model.Bank;
-import odunlamizo.paystack.model.Response;
-import odunlamizo.paystack.util.JsonUtil;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 

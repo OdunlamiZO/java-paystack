@@ -1,4 +1,4 @@
-package odunlamizo.paystack.okhttp;
+package io.github.odunlamizo.paystack.okhttp;
 
 import java.io.IOException;
 import okhttp3.Interceptor;
