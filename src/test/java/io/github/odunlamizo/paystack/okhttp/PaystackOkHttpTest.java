@@ -2,11 +2,10 @@ package io.github.odunlamizo.paystack.okhttp;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import io.github.odunlamizo.paystack.model.AccountDetails;
+import io.github.odunlamizo.paystack.model.Bank;
+import io.github.odunlamizo.paystack.model.Response;
 import java.util.List;
-import odunlamizo.paystack.model.AccountDetails;
-import odunlamizo.paystack.model.Bank;
-import odunlamizo.paystack.model.Response;
-import odunlamizo.paystack.okhttp.PaystackOkHttp;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
 import org.junit.jupiter.api.*;
