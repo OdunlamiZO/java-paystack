@@ -1,11 +1,10 @@
 package io.github.odunlamizo.paystack;
 
-import jakarta.validation.constraints.NotNull;
-import java.util.List;
-
 import io.github.odunlamizo.paystack.model.AccountDetails;
 import io.github.odunlamizo.paystack.model.Bank;
 import io.github.odunlamizo.paystack.model.Response;
+import jakarta.validation.constraints.NotNull;
+import java.util.List;
 
 /** Paystack API */
 public interface Paystack {
