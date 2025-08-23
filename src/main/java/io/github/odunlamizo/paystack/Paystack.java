@@ -1,32 +1,77 @@
 package io.github.odunlamizo.paystack;
 
-import io.github.odunlamizo.paystack.model.AccountDetails;
-import io.github.odunlamizo.paystack.model.Bank;
-import io.github.odunlamizo.paystack.model.Response;
-import jakarta.validation.constraints.NotNull;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import io.github.odunlamizo.paystack.model.*;
+import java.nio.charset.StandardCharsets;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 import java.util.List;
+import java.util.function.Consumer;
+import javax.crypto.Mac;
+import javax.crypto.spec.SecretKeySpec;
+import lombok.NonNull;
 
 /** Paystack API */
 public interface Paystack {
 
     /**
-     * Confirm an account belongs to the right customer
+     * Verifies that an account belongs to the specified customer.
      *
-     * @param accountNumber - customer's account number
-     * @param bankCode - customer's bank code
-     * @return Response<AccountDetails> - response containing customer's account details
-     * @throws PaystackException
+     * @param accountNumber the customer's account number
+     * @param bankCode the customer's bank code
+     * @return a {@link Response} containing the {@link AccountDetails} of the account
+     * @throws PaystackException if the request fails due to network issues or API errors
      */
-    Response<AccountDetails> resolveAccount(@NotNull String accountNumber, @NotNull String bankCode)
+    Response<AccountDetails> resolveAccount(@NonNull String accountNumber, @NonNull String bankCode)
             throws PaystackException;
 
     /**
-     * Get a list of all supported banks and their properties.
+     * Retrieves the list of supported banks for a given country.
      *
-     * @param country - The country from which to obtain the list of supported banks. Accepted
-     *     values are: ghana, kenya, nigeria, south africa
-     * @return Response<List<Bank>> - response containing list of supported banks
-     * @throws PaystackException
+     * @param country the country to fetch banks for (e.g. "ghana", "kenya", "nigeria", "south
+     *     africa")
+     * @return a {@link Response} containing the list of supported {@link Bank} objects
+     * @throws PaystackException if the request fails due to network issues or API errors
      */
-    Response<List<Bank>> listBanks(String country) throws PaystackException;
+    Response<List<Bank>> listBanks(@NonNull String country) throws PaystackException;
+
+    /**
+     * Initializes a Paystack transaction for a customer.
+     *
+     * <p>This method creates a new transaction on Paystack and returns an authorization URL and
+     * related metadata that can be used to complete payment.
+     *
+     * @param request the transaction initialization payload
+     * @return a {@link Response} containing the Paystack initialization response
+     * @throws PaystackException if the request fails due to network errors, invalid parameters, or
+     *     Paystack API errors
+     */
+    Response<InitializeTransactionResponse> initializeTransaction(
+            @NonNull InitializeTransactionRequest request)
+            throws PaystackException, JsonProcessingException;
+
+    <T> void processWebhook(
+            @NonNull String payload,
+            @NonNull String signature,
+            @NonNull Consumer<PaystackEvent<T>> handler)
+            throws PaystackException,
+                    NoSuchAlgorithmException,
+                    InvalidKeyException,
+                    JsonProcessingException;
+
+    default boolean isValidSignature(String secretKey, String body, String signature)
+            throws NoSuchAlgorithmException, InvalidKeyException {
+        Mac sha512 = Mac.getInstance("HmacSHA512");
+        sha512.init(new SecretKeySpec(secretKey.getBytes(StandardCharsets.UTF_8), "HmacSHA512"));
+        String hash = bytesToHex(sha512.doFinal(body.getBytes(StandardCharsets.UTF_8)));
+        return hash.equals(signature);
+    }
+
+    default String bytesToHex(byte[] bytes) {
+        StringBuilder result = new StringBuilder();
+        for (byte b : bytes) {
+            result.append(String.format("%02x", b));
+        }
+        return result.toString();
+    }
 }

@@ -2,9 +2,9 @@ package io.github.odunlamizo.paystack.okhttp;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import io.github.odunlamizo.paystack.model.AccountDetails;
-import io.github.odunlamizo.paystack.model.Bank;
-import io.github.odunlamizo.paystack.model.Response;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import io.github.odunlamizo.paystack.PaystackException;
+import io.github.odunlamizo.paystack.model.*;
 import java.util.List;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
@@ -94,5 +94,75 @@ class PaystackOkHttpTest {
         assertEquals(1, response.getData().size());
         assertEquals("Access Bank", response.getData().get(0).getName());
         assertEquals("044", response.getData().get(0).getCode());
+    }
+
+    @Test
+    void testInitializeTransactionSuccess() throws PaystackException, JsonProcessingException {
+        String json =
+                """
+                {
+                  "status": true,
+                  "message": "Authorization URL created",
+                  "data": {
+                    "authorization_url": "https://checkout.paystack.com/abc123",
+                    "access_code": "xyz987",
+                    "reference": "ref123"
+                  }
+                }
+                """;
+
+        mockWebServer.enqueue(
+                new MockResponse().setBody(json).addHeader("Content-Type", "application/json"));
+
+        InitializeTransactionRequest request =
+                InitializeTransactionRequest.builder()
+                        .amount("20000")
+                        .email("test@example.com")
+                        .currency("NGN")
+                        .reference("ref123")
+                        .build();
+
+        Response<InitializeTransactionResponse> response = paystack.initializeTransaction(request);
+
+        assertTrue(response.isStatus());
+        assertEquals(200, response.getCode());
+        assertEquals("Authorization URL created", response.getMessage());
+        assertEquals(
+                "https://checkout.paystack.com/abc123", response.getData().getAuthorizationUrl());
+        assertEquals("xyz987", response.getData().getAccessCode());
+        assertEquals("ref123", response.getData().getReference());
+    }
+
+    @Test
+    void testInitializeTransactionFailure() throws PaystackException, JsonProcessingException {
+        String json =
+                """
+                {
+                  "status": false,
+                  "message": "Invalid email supplied",
+                  "data": null
+                }
+                """;
+
+        mockWebServer.enqueue(
+                new MockResponse()
+                        .setResponseCode(400)
+                        .setBody(json)
+                        .addHeader("Content-Type", "application/json"));
+
+        InitializeTransactionRequest request =
+                InitializeTransactionRequest.builder()
+                        .amount("20000")
+                        .email("bad-email")
+                        .currency("NGN")
+                        .reference("ref123")
+                        .build();
+
+        Response<InitializeTransactionResponse> response = paystack.initializeTransaction(request);
+
+        assertFalse(response.isStatus());
+        assertEquals(400, response.getCode());
+        assertEquals("Invalid email supplied", response.getMessage());
+        assertNull(response.getData());
     }
 }

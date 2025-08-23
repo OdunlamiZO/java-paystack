@@ -1,6 +1,8 @@
 package io.github.odunlamizo.paystack;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import io.github.cdimascio.dotenv.Dotenv;
+import io.github.odunlamizo.paystack.model.InitializeTransactionRequest;
 import io.github.odunlamizo.paystack.okhttp.PaystackOkHttp;
 
 public class App {
@@ -9,7 +11,7 @@ public class App {
         // Load environment variables from .env file
         Dotenv dotenv = Dotenv.configure().load();
 
-        // Get API key from .env
+        // Get the API key from .env
         String apiKey = dotenv.get("PAYSTACK_API_KEY");
 
         // Check if the API key exists
@@ -19,7 +21,17 @@ public class App {
         }
 
         Paystack paystack = new PaystackOkHttp(apiKey);
-        System.out.println(paystack.resolveAccount("9036678078", "999992"));
+        // System.out.println(paystack.resolveAccount("9036678078", "999992"));
         // System.out.println(paystack.listBanks("nigeria"));
+        try {
+            System.out.println(
+                    paystack.initializeTransaction(
+                            InitializeTransactionRequest.builder()
+                                    .email("tunde@gmail.com")
+                                    .amount("1000")
+                                    .build()));
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
