@@ -22,6 +22,7 @@ public class PaystackOkHttp implements Paystack {
 
     private final OkHttpClient client;
     private final String baseUrl;
+    private final String secretKey;
     private static final MediaType JSON = MediaType.get("application/json; charset=utf-8");
 
     public PaystackOkHttp(@NonNull String secretKey) {
@@ -30,6 +31,7 @@ public class PaystackOkHttp implements Paystack {
 
     public PaystackOkHttp(@NonNull String secretKey, @NonNull String baseUrl) {
         this.baseUrl = baseUrl;
+        this.secretKey = secretKey;
         client = new OkHttpClient.Builder().addInterceptor(new AuthInterceptor(secretKey)).build();
     }
 
@@ -76,7 +78,7 @@ public class PaystackOkHttp implements Paystack {
                     NoSuchAlgorithmException,
                     InvalidKeyException,
                     JsonProcessingException {
-        if (!isValidSignature(signature, payload, signature)) {
+        if (!isValidSignature(secretKey, payload, signature)) {
             throw new PaystackException("Invalid webhook signature");
         }
 

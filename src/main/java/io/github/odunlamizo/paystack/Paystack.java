@@ -50,6 +50,27 @@ public interface Paystack {
             @NonNull InitializeTransactionRequest request)
             throws PaystackException, JsonProcessingException;
 
+    /**
+     * Processes a Paystack webhook payload by validating its integrity and forwarding the event to
+     * the provided handler function.
+     *
+     * <p>The method performs signature verification using the configured secret key to ensure that
+     * the webhook payload originates from Paystack. If validation succeeds, the payload is
+     * deserialized into a {@link PaystackEvent} object and passed to the supplied handler for
+     * further processing.
+     *
+     * @param payload the raw JSON payload received from Paystack
+     * @param signature the HMAC-SHA512 signature from the webhook request headers
+     * @param handler a consumer function that handles the validated {@link PaystackEvent} instance
+     *     (e.g., updating transaction status in your system)
+     * @param <T> the type of event data contained in the webhook (e.g., transaction, subscription)
+     * @throws PaystackException if payload validation or processing fails due to an SDK-related
+     *     error
+     * @throws NoSuchAlgorithmException if the HMAC-SHA512 algorithm is not available in the runtime
+     * @throws InvalidKeyException if the secret key used for validation is invalid
+     * @throws JsonProcessingException if deserialization of the webhook payload into {@link
+     *     PaystackEvent} fails
+     */
     <T> void processWebhook(
             @NonNull String payload,
             @NonNull String signature,
