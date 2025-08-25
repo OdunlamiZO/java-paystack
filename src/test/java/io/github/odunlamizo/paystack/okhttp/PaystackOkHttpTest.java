@@ -2,9 +2,9 @@ package io.github.odunlamizo.paystack.okhttp;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import io.github.odunlamizo.paystack.PaystackException;
 import io.github.odunlamizo.paystack.model.*;
+import java.io.IOException;
 import java.util.List;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
@@ -33,7 +33,7 @@ class PaystackOkHttpTest {
     }
 
     @Test
-    void testResolveAccount() {
+    void testResolveAccount() throws IOException {
         String json =
                 """
                 {
@@ -59,7 +59,7 @@ class PaystackOkHttpTest {
     }
 
     @Test
-    void testListBanks() {
+    void testListBanks() throws IOException {
         String json =
                 """
                 {
@@ -97,7 +97,7 @@ class PaystackOkHttpTest {
     }
 
     @Test
-    void testInitializeTransactionSuccess() throws PaystackException, JsonProcessingException {
+    void testInitializeTransactionSuccess() throws PaystackException, IOException {
         String json =
                 """
                 {
@@ -134,7 +134,7 @@ class PaystackOkHttpTest {
     }
 
     @Test
-    void testInitializeTransactionFailure() throws PaystackException, JsonProcessingException {
+    void testInitializeTransactionFailure() throws PaystackException, IOException {
         String json =
                 """
                 {

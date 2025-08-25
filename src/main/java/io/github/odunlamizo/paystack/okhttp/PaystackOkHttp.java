@@ -37,7 +37,8 @@ public class PaystackOkHttp implements Paystack {
 
     @Override
     public Response<AccountDetails> resolveAccount(
-            @NonNull String accountNumber, @NonNull String bankCode) throws PaystackException {
+            @NonNull String accountNumber, @NonNull String bankCode)
+            throws PaystackException, IOException {
         final String URL =
                 String.format(
                         "%s/bank/resolve?account_number=%s&bank_code=%s",
@@ -48,7 +49,8 @@ public class PaystackOkHttp implements Paystack {
     }
 
     @Override
-    public Response<List<Bank>> listBanks(@NonNull String country) throws PaystackException {
+    public Response<List<Bank>> listBanks(@NonNull String country)
+            throws PaystackException, IOException {
         final String URL = String.format("%s/bank?country=%s", baseUrl, country);
         Request request = new Request.Builder().url(URL).build();
 
@@ -57,8 +59,7 @@ public class PaystackOkHttp implements Paystack {
 
     @Override
     public Response<InitializeTransactionResponse> initializeTransaction(
-            @NonNull InitializeTransactionRequest payload)
-            throws PaystackException, JsonProcessingException {
+            @NonNull InitializeTransactionRequest payload) throws PaystackException, IOException {
         final String URL = String.format("%s/transaction/initialize", baseUrl);
         Request request =
                 new Request.Builder()
@@ -79,7 +80,7 @@ public class PaystackOkHttp implements Paystack {
                     InvalidKeyException,
                     JsonProcessingException {
         if (!isValidSignature(secretKey, payload, signature)) {
-            throw new PaystackException("Invalid webhook signature");
+            throw new PaystackException("invalid webhook signature");
         }
 
         PaystackEvent<T> event = JsonUtil.toValue(payload, new TypeReference<>() {});
@@ -87,19 +88,16 @@ public class PaystackOkHttp implements Paystack {
         handler.accept(event);
     }
 
-    private <T> Response<T> newCall(Request request, TypeReference<Response<T>> typeRef) {
-        try {
-            try (okhttp3.Response response = client.newCall(request).execute()) {
+    private <T> Response<T> newCall(Request request, TypeReference<Response<T>> typeRef)
+            throws IOException {
+        try (okhttp3.Response response = client.newCall(request).execute()) {
 
-                String json = null;
-                if (response.body() != null) {
-                    json = response.body().string();
-                }
-
-                return JsonUtil.toValue(json, typeRef).setCode(response.code());
+            String json = null;
+            if (response.body() != null) {
+                json = response.body().string();
             }
-        } catch (IOException exception) {
-            throw new PaystackException(exception.getMessage(), exception.getCause());
+
+            return JsonUtil.toValue(json, typeRef).setCode(response.code());
         }
     }
 }
