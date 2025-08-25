@@ -2,6 +2,7 @@ package io.github.odunlamizo.paystack;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import io.github.odunlamizo.paystack.model.*;
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
@@ -21,9 +22,10 @@ public interface Paystack {
      * @param bankCode the customer's bank code
      * @return a {@link Response} containing the {@link AccountDetails} of the account
      * @throws PaystackException if the request fails due to network issues or API errors
+     * @throws IOException if a network or I/O error occurs while making the request
      */
     Response<AccountDetails> resolveAccount(@NonNull String accountNumber, @NonNull String bankCode)
-            throws PaystackException;
+            throws PaystackException, IOException;
 
     /**
      * Retrieves the list of supported banks for a given country.
@@ -32,8 +34,9 @@ public interface Paystack {
      *     africa")
      * @return a {@link Response} containing the list of supported {@link Bank} objects
      * @throws PaystackException if the request fails due to network issues or API errors
+     * @throws IOException if a network or I/O error occurs while making the request
      */
-    Response<List<Bank>> listBanks(@NonNull String country) throws PaystackException;
+    Response<List<Bank>> listBanks(@NonNull String country) throws PaystackException, IOException;
 
     /**
      * Initializes a Paystack transaction for a customer.
@@ -45,31 +48,29 @@ public interface Paystack {
      * @return a {@link Response} containing the Paystack initialization response
      * @throws PaystackException if the request fails due to network errors, invalid parameters, or
      *     Paystack API errors
+     * @throws IOException if a network or I/O error occurs while making the request
      */
     Response<InitializeTransactionResponse> initializeTransaction(
-            @NonNull InitializeTransactionRequest request)
-            throws PaystackException, JsonProcessingException;
+            @NonNull InitializeTransactionRequest request) throws PaystackException, IOException;
 
     /**
-     * Processes a Paystack webhook payload by validating its integrity and forwarding the event to
-     * the provided handler function.
+     * Validates and processes a Paystack webhook event.
      *
-     * <p>The method performs signature verification using the configured secret key to ensure that
-     * the webhook payload originates from Paystack. If validation succeeds, the payload is
-     * deserialized into a {@link PaystackEvent} object and passed to the supplied handler for
-     * further processing.
+     * <p>This method verifies the integrity of the incoming webhook request using the configured
+     * secret key and the HMAC-SHA512 signature provided by Paystack. If the signature is valid, the
+     * payload is deserialized into a {@link PaystackEvent} object and passed to the supplied
+     * handler for further processing (e.g., updating transaction or subscription status).
      *
      * @param payload the raw JSON payload received from Paystack
      * @param signature the HMAC-SHA512 signature from the webhook request headers
-     * @param handler a consumer function that handles the validated {@link PaystackEvent} instance
-     *     (e.g., updating transaction status in your system)
-     * @param <T> the type of event data contained in the webhook (e.g., transaction, subscription)
-     * @throws PaystackException if payload validation or processing fails due to an SDK-related
-     *     error
-     * @throws NoSuchAlgorithmException if the HMAC-SHA512 algorithm is not available in the runtime
-     * @throws InvalidKeyException if the secret key used for validation is invalid
-     * @throws JsonProcessingException if deserialization of the webhook payload into {@link
-     *     PaystackEvent} fails
+     * @param handler a consumer function that processes the validated {@link PaystackEvent}
+     *     instance
+     * @param <T> the type of data contained in the event (e.g., transaction, subscription)
+     * @throws PaystackException if the signature is invalid or another SDK-related error occurs
+     * @throws NoSuchAlgorithmException if the HMAC-SHA512 algorithm is unavailable in the runtime
+     * @throws InvalidKeyException if the secret key used for signature validation is invalid
+     * @throws JsonProcessingException if deserialization of the payload into {@link PaystackEvent}
+     *     fails
      */
     <T> void processWebhook(
             @NonNull String payload,

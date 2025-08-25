@@ -1,9 +1,9 @@
 package io.github.odunlamizo.paystack;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import io.github.cdimascio.dotenv.Dotenv;
 import io.github.odunlamizo.paystack.model.InitializeTransactionRequest;
 import io.github.odunlamizo.paystack.okhttp.PaystackOkHttp;
+import java.io.IOException;
 
 public class App {
 
@@ -30,8 +30,8 @@ public class App {
                                     .email("tunde@gmail.com")
                                     .amount("1000")
                                     .build()));
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
+        } catch (IOException e) {
+            System.err.println("Error: " + e.getMessage());
         }
     }
 }
