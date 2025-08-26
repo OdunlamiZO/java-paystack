@@ -1,6 +1,5 @@
 package io.github.odunlamizo.paystack;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import io.github.odunlamizo.paystack.model.*;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -63,23 +62,15 @@ public interface Paystack {
      *
      * @param payload the raw JSON payload received from Paystack
      * @param signature the HMAC-SHA512 signature from the webhook request headers
-     * @param handler a consumer function that processes the validated {@link PaystackEvent}
-     *     instance
+     * @param handler a consumer function that processes the validated payload
      * @param <T> the type of data contained in the event (e.g., transaction, subscription)
      * @throws PaystackException if the signature is invalid or another SDK-related error occurs
      * @throws NoSuchAlgorithmException if the HMAC-SHA512 algorithm is unavailable in the runtime
      * @throws InvalidKeyException if the secret key used for signature validation is invalid
-     * @throws JsonProcessingException if deserialization of the payload into {@link PaystackEvent}
-     *     fails
      */
     <T> void processWebhook(
-            @NonNull String payload,
-            @NonNull String signature,
-            @NonNull Consumer<PaystackEvent<T>> handler)
-            throws PaystackException,
-                    NoSuchAlgorithmException,
-                    InvalidKeyException,
-                    JsonProcessingException;
+            @NonNull String payload, @NonNull String signature, @NonNull Consumer<String> handler)
+            throws PaystackException, NoSuchAlgorithmException, InvalidKeyException;
 
     default boolean isValidSignature(String secretKey, String body, String signature)
             throws NoSuchAlgorithmException, InvalidKeyException {

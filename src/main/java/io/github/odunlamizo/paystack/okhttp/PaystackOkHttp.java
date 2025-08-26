@@ -1,6 +1,5 @@
 package io.github.odunlamizo.paystack.okhttp;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import io.github.odunlamizo.paystack.Paystack;
 import io.github.odunlamizo.paystack.PaystackException;
@@ -72,20 +71,13 @@ public class PaystackOkHttp implements Paystack {
 
     @Override
     public <T> void processWebhook(
-            @NonNull String payload,
-            @NonNull String signature,
-            @NonNull Consumer<PaystackEvent<T>> handler)
-            throws PaystackException,
-                    NoSuchAlgorithmException,
-                    InvalidKeyException,
-                    JsonProcessingException {
+            @NonNull String payload, @NonNull String signature, @NonNull Consumer<String> handler)
+            throws PaystackException, NoSuchAlgorithmException, InvalidKeyException {
         if (!isValidSignature(secretKey, payload, signature)) {
             throw new PaystackException("invalid webhook signature");
         }
 
-        PaystackEvent<T> event = JsonUtil.toValue(payload, new TypeReference<>() {});
-
-        handler.accept(event);
+        handler.accept(payload);
     }
 
     private <T> Response<T> newCall(Request request, TypeReference<Response<T>> typeRef)
