@@ -165,4 +165,91 @@ class PaystackOkHttpTest {
         assertEquals("Invalid email supplied", response.getMessage());
         assertNull(response.getData());
     }
+
+    @Test
+    void testCreateSubaccountSuccess() throws IOException {
+        String json =
+                """
+                {
+                  "status": true,
+                  "message": "Subaccount created",
+                  "data": {
+                    "business_name": "Oasis",
+                    "account_number": "0123456047",
+                    "percentage_charge": 30,
+                    "settlement_bank": "Guaranty Trust Bank",
+                    "currency": "NGN",
+                    "bank": 9,
+                    "integration": 463433,
+                    "domain": "test",
+                    "account_name": "LARRY JAMES  O",
+                    "product": "collection",
+                    "managed_by_integration": 463433,
+                    "subaccount_code": "ACCT_6uujpqtzmnufzkw",
+                    "is_verified": false,
+                    "settlement_schedule": "AUTO",
+                    "active": true,
+                    "migrate": false,
+                    "id": 1151727,
+                    "createdAt": "2024-08-26T09:24:28.723Z",
+                    "updatedAt": "2024-08-26T09:24:28.723Z"
+                  }
+                }
+                """;
+
+        mockWebServer.enqueue(
+                new MockResponse().setBody(json).addHeader("Content-Type", "application/json"));
+
+        CreateSubaccountRequest request =
+                CreateSubaccountRequest.builder()
+                        .businessName("Oasis")
+                        .bankCode("058")
+                        .accountNumber("0123456047")
+                        .percentageCharge(30f)
+                        .build();
+
+        Response<CreateSubaccountResponse> response = paystack.createSubaccount(request);
+
+        assertTrue(response.isStatus());
+        assertEquals(200, response.getCode());
+        assertEquals("Subaccount created", response.getMessage());
+        assertNotNull(response.getData());
+        assertEquals("Oasis", response.getData().getBusinessName());
+        assertEquals("0123456047", response.getData().getAccountNumber());
+        assertEquals("ACCT_6uujpqtzmnufzkw", response.getData().getSubaccountCode());
+        assertEquals("Guaranty Trust Bank", response.getData().getSettlementBank());
+    }
+
+    @Test
+    void testCreateSubaccountFailure() throws IOException {
+        String json =
+                """
+                {
+                  "status": false,
+                  "message": "Bank account is invalid",
+                  "data": null
+                }
+                """;
+
+        mockWebServer.enqueue(
+                new MockResponse()
+                        .setResponseCode(400)
+                        .setBody(json)
+                        .addHeader("Content-Type", "application/json"));
+
+        CreateSubaccountRequest request =
+                CreateSubaccountRequest.builder()
+                        .businessName("Oasis")
+                        .bankCode("999") // invalid bank
+                        .accountNumber("0000000000")
+                        .percentageCharge(30f)
+                        .build();
+
+        Response<CreateSubaccountResponse> response = paystack.createSubaccount(request);
+
+        assertFalse(response.isStatus());
+        assertEquals(400, response.getCode());
+        assertEquals("Bank account is invalid", response.getMessage());
+        assertNull(response.getData());
+    }
 }

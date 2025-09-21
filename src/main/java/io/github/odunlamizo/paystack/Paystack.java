@@ -20,11 +20,10 @@ public interface Paystack {
      * @param accountNumber the customer's account number
      * @param bankCode the customer's bank code
      * @return a {@link Response} containing the {@link AccountDetails} of the account
-     * @throws PaystackException if the request fails due to network issues or API errors
      * @throws IOException if a network or I/O error occurs while making the request
      */
     Response<AccountDetails> resolveAccount(@NonNull String accountNumber, @NonNull String bankCode)
-            throws PaystackException, IOException;
+            throws IOException;
 
     /**
      * Retrieves the list of supported banks for a given country.
@@ -32,10 +31,9 @@ public interface Paystack {
      * @param country the country to fetch banks for (e.g. "ghana", "kenya", "nigeria", "south
      *     africa")
      * @return a {@link Response} containing the list of supported {@link Bank} objects
-     * @throws PaystackException if the request fails due to network issues or API errors
      * @throws IOException if a network or I/O error occurs while making the request
      */
-    Response<List<Bank>> listBanks(@NonNull String country) throws PaystackException, IOException;
+    Response<List<Bank>> listBanks(@NonNull String country) throws IOException;
 
     /**
      * Initializes a Paystack transaction for a customer.
@@ -43,14 +41,12 @@ public interface Paystack {
      * <p>This method creates a new transaction on Paystack and returns an authorization URL and
      * related metadata that can be used to complete payment.
      *
-     * @param request the transaction initialization payload
+     * @param payload the transaction initialization payload
      * @return a {@link Response} containing the Paystack initialization response
-     * @throws PaystackException if the request fails due to network errors, invalid parameters, or
-     *     Paystack API errors
      * @throws IOException if a network or I/O error occurs while making the request
      */
     Response<InitializeTransactionResponse> initializeTransaction(
-            @NonNull InitializeTransactionRequest request) throws PaystackException, IOException;
+            @NonNull InitializeTransactionRequest payload) throws IOException;
 
     /**
      * Validates and processes a Paystack webhook event.
@@ -71,6 +67,19 @@ public interface Paystack {
     <T> void processWebhook(
             @NonNull String payload, @NonNull String signature, @NonNull Consumer<String> handler)
             throws PaystackException, NoSuchAlgorithmException, InvalidKeyException;
+
+    /**
+     * Creates a new subaccount on Paystack.
+     *
+     * <p>This method registers a subaccount under your Paystack account, which can be used to
+     * receive payments separately from your main account.
+     *
+     * @param payload the subaccount creation payload
+     * @return a {@link Response} containing the Paystack subaccount creation response
+     * @throws IOException if a network or I/O error occurs while making the request
+     */
+    Response<CreateSubaccountResponse> createSubaccount(@NonNull CreateSubaccountRequest payload)
+            throws IOException;
 
     default boolean isValidSignature(String secretKey, String body, String signature)
             throws NoSuchAlgorithmException, InvalidKeyException {
