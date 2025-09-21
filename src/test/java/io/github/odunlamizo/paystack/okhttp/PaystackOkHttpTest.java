@@ -252,5 +252,4 @@ class PaystackOkHttpTest {
         assertEquals("Bank account is invalid", response.getMessage());
         assertNull(response.getData());
     }
-
 }

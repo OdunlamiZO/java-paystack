@@ -48,8 +48,8 @@ public class CreateSubaccountRequest {
     private String primaryContactPhone;
 
     /**
-     * Optional. Stringified JSON object.
-     * Example: {"custom_fields":[{"display_name":"Cart ID","variable_name":"cart_id","value":"8393"}]}
+     * Optional. Stringified JSON object. Example: {"custom_fields":[{"display_name":"Cart
+     * ID","variable_name":"cart_id","value":"8393"}]}
      */
     private String metadata;
 }
