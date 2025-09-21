@@ -1,7 +1,6 @@
 package io.github.odunlamizo.paystack;
 
 import io.github.cdimascio.dotenv.Dotenv;
-import io.github.odunlamizo.paystack.model.InitializeTransactionRequest;
 import io.github.odunlamizo.paystack.okhttp.PaystackOkHttp;
 import java.io.IOException;
 
@@ -21,17 +20,25 @@ public class App {
         }
 
         Paystack paystack = new PaystackOkHttp(apiKey);
-        // System.out.println(paystack.resolveAccount("9036678078", "999992"));
-        // System.out.println(paystack.listBanks("nigeria"));
         try {
-            System.out.println(
-                    paystack.initializeTransaction(
-                            InitializeTransactionRequest.builder()
-                                    .email("tunde@gmail.com")
-                                    .amount("1000")
-                                    .build()));
+            System.out.println(paystack.resolveAccount("9036678078", "999992"));
         } catch (IOException e) {
             System.err.println("Error: " + e.getMessage());
         }
+        //        try {
+        //            System.out.println(paystack.listBanks("nigeria"));
+        //        } catch (IOException e) {
+        //            System.err.println("Error: " + e.getMessage());
+        //        }
+        //        try {
+        //            System.out.println(
+        //                    paystack.initializeTransaction(
+        //                            InitializeTransactionRequest.builder()
+        //                                    .email("tunde@gmail.com")
+        //                                    .amount("1000")
+        //                                    .build()));
+        //        } catch (IOException e) {
+        //            System.err.println("Error: " + e.getMessage());
+        //        }
     }
 }

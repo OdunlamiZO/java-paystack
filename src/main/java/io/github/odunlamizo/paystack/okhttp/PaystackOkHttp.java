@@ -36,8 +36,7 @@ public class PaystackOkHttp implements Paystack {
 
     @Override
     public Response<AccountDetails> resolveAccount(
-            @NonNull String accountNumber, @NonNull String bankCode)
-            throws PaystackException, IOException {
+            @NonNull String accountNumber, @NonNull String bankCode) throws IOException {
         final String URL =
                 String.format(
                         "%s/bank/resolve?account_number=%s&bank_code=%s",
@@ -48,8 +47,7 @@ public class PaystackOkHttp implements Paystack {
     }
 
     @Override
-    public Response<List<Bank>> listBanks(@NonNull String country)
-            throws PaystackException, IOException {
+    public Response<List<Bank>> listBanks(@NonNull String country) throws IOException {
         final String URL = String.format("%s/bank?country=%s", baseUrl, country);
         Request request = new Request.Builder().url(URL).build();
 
@@ -58,7 +56,7 @@ public class PaystackOkHttp implements Paystack {
 
     @Override
     public Response<InitializeTransactionResponse> initializeTransaction(
-            @NonNull InitializeTransactionRequest payload) throws PaystackException, IOException {
+            @NonNull InitializeTransactionRequest payload) throws IOException {
         final String URL = String.format("%s/transaction/initialize", baseUrl);
         Request request =
                 new Request.Builder()
@@ -78,6 +76,19 @@ public class PaystackOkHttp implements Paystack {
         }
 
         handler.accept(payload);
+    }
+
+    @Override
+    public Response<CreateSubaccountResponse> createSubaccount(
+            @NonNull CreateSubaccountRequest payload) throws IOException {
+        final String URL = String.format("%s/subaccount", baseUrl);
+        Request request =
+                new Request.Builder()
+                        .url(URL)
+                        .post(RequestBody.create(JsonUtil.toJson(payload), JSON))
+                        .build();
+
+        return newCall(request, new TypeReference<>() {});
     }
 
     private <T> Response<T> newCall(Request request, TypeReference<Response<T>> typeRef)
