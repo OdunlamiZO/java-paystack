@@ -59,12 +59,11 @@ public interface Paystack {
      * @param payload the raw JSON payload received from Paystack
      * @param signature the HMAC-SHA512 signature from the webhook request headers
      * @param handler a consumer function that processes the validated payload
-     * @param <T> the type of data contained in the event (e.g., transaction, subscription)
      * @throws PaystackException if the signature is invalid or another SDK-related error occurs
      * @throws NoSuchAlgorithmException if the HMAC-SHA512 algorithm is unavailable in the runtime
      * @throws InvalidKeyException if the secret key used for signature validation is invalid
      */
-    <T> void processWebhook(
+    void processWebhook(
             @NonNull String payload, @NonNull String signature, @NonNull Consumer<String> handler)
             throws PaystackException, NoSuchAlgorithmException, InvalidKeyException;
 

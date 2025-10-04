@@ -68,7 +68,7 @@ public class PaystackOkHttp implements Paystack {
     }
 
     @Override
-    public <T> void processWebhook(
+    public void processWebhook(
             @NonNull String payload, @NonNull String signature, @NonNull Consumer<String> handler)
             throws PaystackException, NoSuchAlgorithmException, InvalidKeyException {
         if (!isValidSignature(secretKey, payload, signature)) {
