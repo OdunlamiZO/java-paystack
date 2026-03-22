@@ -91,6 +91,19 @@ public class PaystackOkHttp implements Paystack {
         return newCall(request, new TypeReference<>() {});
     }
 
+    @Override
+    public Response<CreateRefundResponse> createRefund(@NonNull CreateRefundRequest payload)
+            throws IOException {
+        final String URL = String.format("%s/refund", baseUrl);
+        Request request =
+                new Request.Builder()
+                        .url(URL)
+                        .post(RequestBody.create(JsonUtil.toJson(payload), JSON))
+                        .build();
+
+        return newCall(request, new TypeReference<>() {});
+    }
+
     private <T> Response<T> newCall(Request request, TypeReference<Response<T>> typeRef)
             throws IOException {
         try (okhttp3.Response response = client.newCall(request).execute()) {

@@ -252,4 +252,84 @@ class PaystackOkHttpTest {
         assertEquals("Bank account is invalid", response.getMessage());
         assertNull(response.getData());
     }
+
+    @Test
+    void testCreateRefundSuccess() throws IOException {
+        String json =
+                """
+                {
+                  "status": true,
+                  "message": "Refund has been queued for processing",
+                  "data": {
+                    "id": 1641,
+                    "integration": 463433,
+                    "domain": "test",
+                    "transaction": 1641,
+                    "dispute": null,
+                    "amount": 500000,
+                    "deducted_amount": null,
+                    "currency": "NGN",
+                    "channel": "migs",
+                    "fully_deducted": false,
+                    "refunded_at": null,
+                    "expected_at": "2020-01-23",
+                    "customer_note": "Product not delivered",
+                    "merchant_note": "Merchant accepts refund",
+                    "created_at": "2020-01-16T09:33:13.000Z",
+                    "updated_at": "2020-01-16T09:33:13.000Z",
+                    "status": "pending"
+                  }
+                }
+                """;
+
+        mockWebServer.enqueue(
+                new MockResponse().setBody(json).addHeader("Content-Type", "application/json"));
+
+        CreateRefundRequest request =
+                CreateRefundRequest.builder()
+                        .transaction("ref123")
+                        .customerNote("Product not delivered")
+                        .merchantNote("Merchant accepts refund")
+                        .build();
+
+        Response<CreateRefundResponse> response = paystack.createRefund(request);
+
+        assertTrue(response.isStatus());
+        assertEquals(200, response.getCode());
+        assertEquals("Refund has been queued for processing", response.getMessage());
+        assertNotNull(response.getData());
+        assertEquals(1641L, response.getData().getId());
+        assertEquals("NGN", response.getData().getCurrency());
+        assertEquals("pending", response.getData().getStatus());
+        assertEquals(500000L, response.getData().getAmount());
+        assertEquals("Product not delivered", response.getData().getCustomerNote());
+        assertEquals("Merchant accepts refund", response.getData().getMerchantNote());
+    }
+
+    @Test
+    void testCreateRefundFailure() throws IOException {
+        String json =
+                """
+                {
+                  "status": false,
+                  "message": "Transaction has been fully reversed",
+                  "data": null
+                }
+                """;
+
+        mockWebServer.enqueue(
+                new MockResponse()
+                        .setResponseCode(400)
+                        .setBody(json)
+                        .addHeader("Content-Type", "application/json"));
+
+        CreateRefundRequest request = CreateRefundRequest.builder().transaction("ref123").build();
+
+        Response<CreateRefundResponse> response = paystack.createRefund(request);
+
+        assertFalse(response.isStatus());
+        assertEquals(400, response.getCode());
+        assertEquals("Transaction has been fully reversed", response.getMessage());
+        assertNull(response.getData());
+    }
 }

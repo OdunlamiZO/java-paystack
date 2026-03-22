@@ -80,6 +80,16 @@ public interface Paystack {
     Response<CreateSubaccountResponse> createSubaccount(@NonNull CreateSubaccountRequest payload)
             throws IOException;
 
+    /**
+     * Initiates a refund for a completed transaction.
+     *
+     * @param payload the refund creation payload
+     * @return a {@link Response} containing the refund details
+     * @throws IOException if a network or I/O error occurs while making the request
+     */
+    Response<CreateRefundResponse> createRefund(@NonNull CreateRefundRequest payload)
+            throws IOException;
+
     default boolean isValidSignature(String secretKey, String body, String signature)
             throws NoSuchAlgorithmException, InvalidKeyException {
         Mac sha512 = Mac.getInstance("HmacSHA512");
