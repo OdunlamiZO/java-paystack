@@ -18,7 +18,7 @@ public class CreateRefundResponse {
 
     private String domain;
 
-    private Long transaction;
+    private Object transaction;
 
     private Long dispute;
 

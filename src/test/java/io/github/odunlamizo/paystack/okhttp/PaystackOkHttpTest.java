@@ -53,7 +53,7 @@ class PaystackOkHttpTest {
         Response<AccountDetails> response = paystack.resolveAccount("0001234567", "058");
 
         assertTrue(response.isStatus());
-        assertEquals(200, response.getCode());
+        assertEquals("200", response.getCode());
         assertEquals("Account number resolved", response.getMessage());
         assertEquals("0001234567", response.getData().getAccountNumber());
     }
@@ -90,7 +90,7 @@ class PaystackOkHttpTest {
         Response<List<Bank>> response = paystack.listBanks("nigeria");
 
         assertTrue(response.isStatus());
-        assertEquals(200, response.getCode());
+        assertEquals("200", response.getCode());
         assertEquals(1, response.getData().size());
         assertEquals("Access Bank", response.getData().get(0).getName());
         assertEquals("044", response.getData().get(0).getCode());
@@ -125,7 +125,7 @@ class PaystackOkHttpTest {
         Response<InitializeTransactionResponse> response = paystack.initializeTransaction(request);
 
         assertTrue(response.isStatus());
-        assertEquals(200, response.getCode());
+        assertEquals("200", response.getCode());
         assertEquals("Authorization URL created", response.getMessage());
         assertEquals(
                 "https://checkout.paystack.com/abc123", response.getData().getAuthorizationUrl());
@@ -161,7 +161,7 @@ class PaystackOkHttpTest {
         Response<InitializeTransactionResponse> response = paystack.initializeTransaction(request);
 
         assertFalse(response.isStatus());
-        assertEquals(400, response.getCode());
+        assertEquals("400", response.getCode());
         assertEquals("Invalid email supplied", response.getMessage());
         assertNull(response.getData());
     }
@@ -211,7 +211,7 @@ class PaystackOkHttpTest {
         Response<CreateSubaccountResponse> response = paystack.createSubaccount(request);
 
         assertTrue(response.isStatus());
-        assertEquals(200, response.getCode());
+        assertEquals("200", response.getCode());
         assertEquals("Subaccount created", response.getMessage());
         assertNotNull(response.getData());
         assertEquals("Oasis", response.getData().getBusinessName());
@@ -248,7 +248,7 @@ class PaystackOkHttpTest {
         Response<CreateSubaccountResponse> response = paystack.createSubaccount(request);
 
         assertFalse(response.isStatus());
-        assertEquals(400, response.getCode());
+        assertEquals("400", response.getCode());
         assertEquals("Bank account is invalid", response.getMessage());
         assertNull(response.getData());
     }
@@ -295,7 +295,7 @@ class PaystackOkHttpTest {
         Response<CreateRefundResponse> response = paystack.createRefund(request);
 
         assertTrue(response.isStatus());
-        assertEquals(200, response.getCode());
+        assertEquals("200", response.getCode());
         assertEquals("Refund has been queued for processing", response.getMessage());
         assertNotNull(response.getData());
         assertEquals(1641L, response.getData().getId());
@@ -328,7 +328,7 @@ class PaystackOkHttpTest {
         Response<CreateRefundResponse> response = paystack.createRefund(request);
 
         assertFalse(response.isStatus());
-        assertEquals(400, response.getCode());
+        assertEquals("400", response.getCode());
         assertEquals("Transaction has been fully reversed", response.getMessage());
         assertNull(response.getData());
     }

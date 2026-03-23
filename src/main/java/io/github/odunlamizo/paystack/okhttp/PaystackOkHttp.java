@@ -113,7 +113,7 @@ public class PaystackOkHttp implements Paystack {
                 json = response.body().string();
             }
 
-            return JsonUtil.toValue(json, typeRef).setCode(response.code());
+            return JsonUtil.toValue(json, typeRef).setCode(String.valueOf(response.code()));
         }
     }
 }

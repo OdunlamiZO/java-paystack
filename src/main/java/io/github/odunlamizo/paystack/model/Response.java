@@ -14,7 +14,7 @@ import lombok.experimental.Accessors;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Response<T> {
 
-    private int code;
+    private String code;
 
     private boolean status;
 
